@@ -47,12 +47,12 @@ async def extract_args(message, markdown=True):
 async def delayspam(client: Client, message: Message):
     if message.chat.id in BLACKLIST_CHAT:
         return await message.reply_text(
-            "**This command is not allowed to be used in this group**"
+            "This command is not allowed to be used in this group"
         )
     delayspam = await extract_args(message)
     arr = delayspam.split()
     if len(arr) < 3 or not arr[0].isdigit() or not arr[1].isdigit():
-        await message.reply_text("`Something seems missing / wrong.`")
+        await message.reply_text("Something seems missing / wrong.")
         return
     delay = int(arr[0])
     count = int(arr[1])
@@ -73,36 +73,8 @@ async def delayspam(client: Client, message: Message):
             break
 
     await client.send_message(
-        LOG_GROUP, "**#DELAYSPAM**\nDelaySpam was executed successfully"
+        LOG_GROUP, "#DELAYSPAM\nDelaySpam was executed successfully"
     )
-
-
-@Client.on_message(
-    filters.command(commands, ".") & (filters.me | filters.user(SUDO_USER))
-)
-async def sspam(client: Client, message: Message):
-    if message.chat.id in BLACKLIST_CHAT:
-        return await message.reply_text(
-            "**This command is not allowed to be used in this group**"
-        )
-    amount = int(message.command[1])
-    text = " ".join(message.command[2:])
-
-    cooldown = {"spam": 0.15, "statspam": 0.1, "slowspam": 0.9, "fastspam": 0}
-
-    await message.delete()
-
-    for msg in range(amount):
-        if message.reply_to_message:
-            sent = await message.reply_to_message.reply(text)
-        else:
-            sent = await client.send_message(message.chat.id, text)
-
-        if message.command[0] == "statspam":
-            await asyncio.sleep(0.1)
-            await sent.delete()
-
-        await asyncio.sleep(cooldown[message.command[0]])
 
 
 @Client.on_message(
@@ -111,35 +83,31 @@ async def sspam(client: Client, message: Message):
 async def spam_stick(client: Client, message: Message):
     if message.chat.id in BLACKLIST_CHAT:
         return await message.reply_text(
-            "**This command is not allowed to be used in this group**"
+            "This command is not allowed to be used in this group"
         )
     if not message.reply_to_message:
         await message.reply_text(
-            "**reply to a sticker with amount you want to spam**"
+            "reply to a sticker with amount you want to spam"
         )
         return
     if not message.reply_to_message.sticker:
         await message.reply_text(
-            "**reply to a sticker with amount you want to spam**"
+            "reply to a sticker with amount you want to spam"
         )
         return
     else:
         i = 0
         times = message.command[1]
-        if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-            for i in range(int(times)):
-                sticker = message.reply_to_message.sticker.file_id
-                await client.send_sticker(
-                    message.chat.id,
-                    sticker,
-                )
-                await asyncio.sleep(0.10)
-
-        if message.chat.type == enums.ChatType.PRIVATE:
-            for i in range(int(times)):
-                sticker = message.reply_to_message.sticker.file_id
-                await client.send_sticker(message.chat.id, sticker)
-                await asyncio.sleep(0.10)
+        sleep_time = message.command[2] if len(message.command) > 2 else 10 # default sleep time is 10 seconds
+    if message.chat.id in [enums.ChatType.BOT]:
+        for i in range(int(times)):
+            sticker = message.reply_to_message.sticker.file_id
+            await client.send_sticker(
+                message.chat.id,
+                sticker,
+            )
+            await client.send_message(message.chat.id, '/next')
+            await asyncio.sleep(int(sleep_time))
 
 
 add_command_help(
