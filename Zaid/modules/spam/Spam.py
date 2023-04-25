@@ -99,7 +99,7 @@ async def spam_stick(client: Client, message: Message):
         i = 0
         times = message.command[1]
         sleep_time = message.command[2] if len(message.command) > 2 else 10 # default sleep time is 10 seconds
-    if message.chat.id in [enums.ChatType.BOT]:
+        if message.chat.type == enums.ChatType.BOT:
         for i in range(int(times)):
             sticker = message.reply_to_message.sticker.file_id
             await client.send_sticker(
