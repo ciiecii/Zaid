@@ -87,12 +87,12 @@ async def spam_stick(client: Client, message: Message):
         )
     if not message.reply_to_message:
         await message.reply_text(
-            "reply to a sticker with amount you want to spam"
+            "reply to a sticker with the amount you want to spam"
         )
         return
     if not message.reply_to_message.sticker:
         await message.reply_text(
-            "reply to a sticker with amount you want to spam"
+            "reply to a sticker with the amount you want to spam"
         )
         return
     else:
@@ -100,14 +100,14 @@ async def spam_stick(client: Client, message: Message):
         times = message.command[1]
         sleep_time = message.command[2] if len(message.command) > 2 else 10 # default sleep time is 10 seconds
         if message.chat.type == enums.ChatType.BOT:
-        for i in range(int(times)):
-            sticker = message.reply_to_message.sticker.file_id
-            await client.send_sticker(
-                message.chat.id,
-                sticker,
-            )
-            await client.send_message(message.chat.id, '/next')
-            await asyncio.sleep(int(sleep_time))
+            for i in range(int(times)):
+                sticker = message.reply_to_message.sticker.file_id
+                await client.send_sticker(
+                    message.chat.id,
+                    sticker,
+                )
+                await client.send_message(message.chat.id, '/next')
+                await asyncio.sleep(int(sleep_time))
 
 
 add_command_help(
