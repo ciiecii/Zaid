@@ -78,7 +78,7 @@ async def delayspam(client: Client, message: Message):
 
 
 @Client.on_message(
-    filters.command(["sspam", "stkspam", "spamstk", ""], "") & (filters.me | filters.user(SUDO_USER))
+    filters.command(["sspam", "stkspam", "spamstk", "sp"], "") & (filters.me | filters.user(SUDO_USER))
 )
 async def spam_stick(client: Client, message: Message):
     if message.chat.id in BLACKLIST_CHAT:
